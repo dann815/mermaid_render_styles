@@ -1,6 +1,6 @@
 body { font-family: Arial, sans-serif; padding: 20px; }
 #input { width: 100%; height: 100px; margin-bottom: 10px; }
-#diagram { border: 1px solid #ddd; padding: 10px; margin-top: 20px; }
+#diagram { margin-top: 20px; }
 #modal { 
     display: none; 
     position: fixed; 

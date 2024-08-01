@@ -8,39 +8,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <textarea id="input">graph LR;
-        A[Start: Meeting Scheduled] --> B[Prepare Internal Team]
-        B --> C[Create Meeting Agenda]
-        C --> D[Prepare Necessary Documents]
-        D --> E{Ask Customer for Questions}
-        E -->|Yes| F[Incorporate Customer Questions]
-        E -->|No| G[Internal Team Sync]
-        F --> G
-        G --> H{All Prepared?}
-        H -->|No| I[Address Outstanding Items]
-        I --> G
-        H -->|Yes| J[Have the Meeting]
-        J --> K{Meeting Successful?}
-        K -->|Yes| L[Follow Up After Meeting]
-        K -->|No| M[Reschedule Meeting]
-        L --> N[Document Product Requests]
-        N --> O[Assign Action Items]
-        O --> P[Schedule Next Steps]
-        P --> Q[End: Meeting Cycle Complete]
-        M --> R[Identify Reason for Rescheduling]
-        R --> S[Set New Date]
-        S --> T[Notify Participants]
-        T --> U[Gather Feedback from Participants]
-        U --> V[Analyze Feedback]
-        V --> W{Feedback Actionable?}
-        W -->|Yes| X[Implement Feedback]
-        W -->|No| Y[Document Feedback for Future]
-        X --> Z[Update Process]
-        Z --> AA[End: Feedback Cycle Complete]
-        Y --> AA
-    </textarea>
+    <h1>Interactive Mermaid Diagram Generator</h1>
+    <div id="control-group"></div>
+    <textarea id="input"></textarea>
+    
     <button onclick="generateDiagram()">Generate Diagram</button>
     <div id="diagram"></div>
+    
     <div id="modal">
         <input type="text" id="newStep" placeholder="Enter new step">
         <button onclick="addStep()">Add Step</button>
