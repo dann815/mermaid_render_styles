@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid Diagram from scratch</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.0/mermaid.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #input { width: 100%; height: 100px; margin-bottom: 10px; }
+        #diagram { border: 1px solid #ddd; padding: 10px; margin-top: 20px; }
+        #modal { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="input">graph LR;
+        A[Start: Meeting Scheduled] --> B[Prepare Internal Team]
+        B --> C[Create Meeting Agenda]
+        C --> D[Prepare Necessary Documents]
+        D --> E{Ask Customer for Questions}
+        E -->|Yes| F[Incorporate Customer Questions]
+        E -->|No| G[Internal Team Sync]
+        F --> G
+        G --> H{All Prepared?}
+        H -->|No| I[Address Outstanding Items]
+        I --> G
+        H -->|Yes| J[Have the Meeting]
+        J --> K{Meeting Successful?}
+        K -->|Yes| L[Follow Up After Meeting]
+        K -->|No| M[Reschedule Meeting]
+        L --> N[Document Product Requests]
+        N --> O[Assign Action Items]
+        O --> P[Schedule Next Steps]
+        P --> Q[End: Meeting Cycle Complete]
+        M --> R[Identify Reason for Rescheduling]
+        R --> S[Set New Date]
+        S --> T[Notify Participants];</textarea>
+    <button onclick="generateDiagram()">Generate Diagram</button>
+    <div id="diagram"></div>
+    <div id="modal">
+        <input type="text" id="newStep" placeholder="Enter new step">
+        <button onclick="addStep()">Add Step</button>
+        <button onclick="closeModal()">Cancel</button>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ startOnLoad: false });
+
+        // Global variables
+        let currentSourceNode;
+        let nodeCounter = {};
+
+        // Generate and render the Mermaid diagram
+        function generateDiagram() {
+            const input = document.getElementById('input').value;
+            mermaid.render('mermaid-diagram', input, function(svgCode) {
+                document.getElementById('diagram').innerHTML = svgCode;
+                addNodeListeners();
+            });
+        }
+
+        // Add click listeners to nodes
+        function addNodeListeners() {
+            document.querySelectorAll('.node').forEach(node => {
+                node.addEventListener('click', () => {
+                    currentSourceNode = node.id.replace(/^flowchart-/, '');
+                    document.getElementById('modal').style.display = 'block';
+                });
+            });
+        }
+
+        // Add a new step to the diagram
+        // graph TD;
+        //     A[Start] --> B[End];
+        //     A --> A-1[asdf]
+        // Clicking on A-1 will add a new step after A-1
+        // graph TD;
+        //     A[Start] --> B[End];
+        //     A --> A-1[asdf]
+        //     A-1 --> A-1-1[asdf]
+        function addStep() {
+            const newStep = document.getElementById('newStep').value.trim();
+            if (newStep && currentSourceNode) {
+                const input = document.getElementById('input');
+                const lines = input.value.split('\n');
+
+                // Remove dash number from source node in the generated DOM
+                const baseSourceNode = currentSourceNode.split('-').slice(0, -1).join('-');
+
+                // Initialize or increment counter for this node
+                nodeCounter[baseSourceNode] = (nodeCounter[baseSourceNode] || 0) + 1;
+                const newNodeId = `${baseSourceNode}-${nodeCounter[baseSourceNode]}`;
+                
+                // Add new node to the diagram
+                lines.push(`    ${baseSourceNode} --> ${newNodeId}[${newStep}]`);
+                input.value = lines.join('\n');
+                
+                generateDiagram();
+                closeNewStepModal();
+            }
+        }
+
+        // Close the newStepModal
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('newStep').value = '';
+        }
+
+        // Initial diagram generation
+        generateDiagram();
+    </script>
+</body>
+</html>
